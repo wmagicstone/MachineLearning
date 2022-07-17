@@ -1942,37 +1942,331 @@ $$
     j_wb = 0
     f_x_list = []
     for i in range(len(x)):
-        f_x = w * x + b
+        f_x = w * x[i] + b
         f_x_list.append(f_x)
     f_x_list = np.array(f_x_list)
+    y = np.array(y)
     j_wb += np.sum((f_x - y)**2)
     return j_wb</pre><pre class="hljs"><code><span class="hljs-keyword">def</span> <span class="hljs-title function_">Cost_Function</span>(<span class="hljs-params">x,y,w,b</span>):
     j_wb = <span class="hljs-number">0</span>
     f_x_list = []
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(x)):
-        f_x = w * x + b
+        f_x = w * x[i] + b
         f_x_list.append(f_x)
     f_x_list = np.array(f_x_list)
+    y = np.array(y)
     j_wb += np.<span class="hljs-built_in">sum</span>((f_x - y)**<span class="hljs-number">2</span>)
     <span class="hljs-keyword">return</span> j_wb</code></pre></div>
 <h3 id="derivative">Derivative</h3>
 <div class="joplin-editable"><pre class="joplin-source" data-joplin-language="python" data-joplin-source-open="```python
 " data-joplin-source-close="
 ```">def Derivate_J_w(x,y,w,b):
+    f_x_list = []
     for i in range(len(x)):
-        
-    
-    
-            
-    
-    </pre><pre class="hljs"><code><span class="hljs-keyword">def</span> <span class="hljs-title function_">Derivate_J_w</span>(<span class="hljs-params">x,y,w,b</span>):
+        f_x = w * x[i] + b
+        f_x_list.append(f_x)
+    f_x_list = np.array(f_x_list)
+    y = np.array(y)
+    dj_dw = np.sum((f_x_list - y) * x)
+    dj_dw = (1/len(x)) * dj_dw
+    return dj_dw
+def Derivate_J_b(x,y,w,b):
+    f_x_list = []
+    for i in range(len(x)):
+        f_x = w * x[i] + b
+        f_x_list.append(f_x)
+    f_x_list = np.array(f_x_list)
+    y = np.array(y)
+    dj_db = np.sum(f_x_list - y)
+    dj_db = (1/len(x)) * dj_db
+    return dj_db</pre><pre class="hljs"><code><span class="hljs-keyword">def</span> <span class="hljs-title function_">Derivate_J_w</span>(<span class="hljs-params">x,y,w,b</span>):
+    f_x_list = []
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(x)):
+        f_x = w * x[i] + b
+        f_x_list.append(f_x)
+    f_x_list = np.array(f_x_list)
+    y = np.array(y)
+    dj_dw = np.<span class="hljs-built_in">sum</span>((f_x_list - y) * x)
+    dj_dw = (<span class="hljs-number">1</span>/<span class="hljs-built_in">len</span>(x)) * dj_dw
+    <span class="hljs-keyword">return</span> dj_dw
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">Derivate_J_b</span>(<span class="hljs-params">x,y,w,b</span>):
+    f_x_list = []
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(x)):
+        f_x = w * x[i] + b
+        f_x_list.append(f_x)
+    f_x_list = np.array(f_x_list)
+    y = np.array(y)
+    dj_db = np.<span class="hljs-built_in">sum</span>(f_x_list - y)
+    dj_db = (<span class="hljs-number">1</span>/<span class="hljs-built_in">len</span>(x)) * dj_db
+    <span class="hljs-keyword">return</span> dj_db</code></pre></div>
+<h3 id="gradient-descent-2">Gradient Descent</h3>
+<div class="joplin-editable"><pre class="joplin-source" data-joplin-language="python" data-joplin-source-open="```python
+" data-joplin-source-close="
+```">def Update_w_b(w,b,dj_dw,dj_db,alpha):
+    w = w - alpha * dj_dw
+    b = b - alpha * dj_db
+    return w,b</pre><pre class="hljs"><code><span class="hljs-keyword">def</span> <span class="hljs-title function_">Update_w_b</span>(<span class="hljs-params">w,b,dj_dw,dj_db,alpha</span>):
+    w = w - alpha * dj_dw
+    b = b - alpha * dj_db
+    <span class="hljs-keyword">return</span> w,b</code></pre></div>
+<h2 id="try-to-trainning">Try to trainning</h2>
+<div class="joplin-editable"><pre class="joplin-source" data-joplin-language="python" data-joplin-source-open="```python
+" data-joplin-source-close="
+```">import numpy as np
+import matpotlib.pyplot as plt
+x_train = [2,8,10,15]
+y_train = [3,6,8,11]
+w = 10
+b = 100
+alpha = 0.1
+plt.scatter(x_train,y_train)
+
+while True:
+    J_wb = Cost_Function(x_train,y_train,w,b)
+    dj_dw = Derivate_J_w(x_train,y_train,w,b)
+    dj_db = Derivate_J_w(x_train,y_train,w,b)
+    w,b = Update_w_b(w,b,dj_dw,dj_dw,alpha)
+    J_wb2 = Cost_Function(x_train,y_train,w,b)
+    if J_wb &lt;= J_wb2:
+        break
+plt.plot(np.array(x),w * np.array(x) + b)
+plt.show()</pre><pre class="hljs"><code><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matpotlib.pyplot <span class="hljs-keyword">as</span> plt
+x_train = [<span class="hljs-number">2</span>,<span class="hljs-number">8</span>,<span class="hljs-number">10</span>,<span class="hljs-number">15</span>]
+y_train = [<span class="hljs-number">3</span>,<span class="hljs-number">6</span>,<span class="hljs-number">8</span>,<span class="hljs-number">11</span>]
+w = <span class="hljs-number">10</span>
+b = <span class="hljs-number">100</span>
+alpha = <span class="hljs-number">0.1</span>
+plt.scatter(x_train,y_train)
+
+<span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+    J_wb = Cost_Function(x_train,y_train,w,b)
+    dj_dw = Derivate_J_w(x_train,y_train,w,b)
+    dj_db = Derivate_J_w(x_train,y_train,w,b)
+    w,b = Update_w_b(w,b,dj_dw,dj_dw,alpha)
+    J_wb2 = Cost_Function(x_train,y_train,w,b)
+    <span class="hljs-keyword">if</span> J_wb &lt;= J_wb2:
+        <span class="hljs-keyword">break</span>
+plt.plot(np.array(x),w * np.array(x) + b)
+plt.show()</code></pre></div>
+<h2 id="correctional-method">Correctional method</h2>
+<div class="joplin-editable"><pre class="joplin-source" data-joplin-language="python" data-joplin-source-open="```python
+" data-joplin-source-close="
+```">import math, copy
+import numpy as np
+import matplotlib.pyplot as plt
+
+x_train = np.array([1,2,3.4,5.6,7,8,9])
+y_train = np.array([3,6,8,11,14,17,21])
+
+def compute_cost(x, y, w, b):
+   
+    m = x.shape[0] 
+    cost = 0
+    
+    for i in range(m):
+        f_wb = w * x[i] + b
+        cost = cost + (f_wb - y[i])**2
+    total_cost = 1 / (2 * m) * cost
+
+    return total_cost
+
+def compute_gradient(x, y, w, b): 
+    &quot;&quot;&quot;
+    Computes the gradient for linear regression 
+    Args:
+      x (ndarray (m,)): Data, m examples 
+      y (ndarray (m,)): target values
+      w,b (scalar)    : model parameters  
+    Returns
+      dj_dw (scalar): The gradient of the cost w.r.t. the parameters w
+      dj_db (scalar): The gradient of the cost w.r.t. the parameter b     
+     &quot;&quot;&quot;
+    
+    # Number of training examples
+    m = x.shape[0]    
+    dj_dw = 0
+    dj_db = 0
+    
+    for i in range(m):  
+        f_wb = w * x[i] + b 
+        dj_dw_i = (f_wb - y[i]) * x[i] 
+        dj_db_i = f_wb - y[i] 
+        dj_db += dj_db_i
+        dj_dw += dj_dw_i 
+    dj_dw = dj_dw / m 
+    dj_db = dj_db / m 
         
+    return dj_dw, dj_db
+
+def gradient_descent(x, y, w_in, b_in, alpha, num_iters, cost_function, gradient_function): 
+    &quot;&quot;&quot;
+    Performs gradient descent to fit w,b. Updates w,b by taking 
+    num_iters gradient steps with learning rate alpha
     
+    Args:
+      x (ndarray (m,))  : Data, m examples 
+      y (ndarray (m,))  : target values
+      w_in,b_in (scalar): initial values of model parameters  
+      alpha (float):     Learning rate
+      num_iters (int):   number of iterations to run gradient descent
+      cost_function:     function to call to produce cost
+      gradient_function: function to call to produce gradient
+      
+    Returns:
+      w (scalar): Updated value of parameter after running gradient descent
+      b (scalar): Updated value of parameter after running gradient descent
+      J_history (List): History of cost values
+      p_history (list): History of parameters [w,b] 
+      &quot;&quot;&quot;
     
-            
+    w = copy.deepcopy(w_in) # avoid modifying global w_in
+    # An array to store cost J and w&apos;s at each iteration primarily for graphing later
+    J_history = []
+    p_history = []
+    b = b_in
+    w = w_in
     
-    </code></pre></div>
+    for i in range(num_iters):
+        # Calculate the gradient and update the parameters using gradient_function
+        dj_dw, dj_db = gradient_function(x, y, w , b)     
+
+        # Update Parameters using equation (3) above
+        b = b - alpha * dj_db                            
+        w = w - alpha * dj_dw                            
+
+        # Save cost J at each iteration
+        if i&lt;100000:      # prevent resource exhaustion 
+            J_history.append( cost_function(x, y, w , b))
+            p_history.append([w,b])
+        # Print cost every at intervals 10 times or as many iterations if &lt; 10
+        if i% math.ceil(num_iters/10) == 0:
+            print(f&quot;Iteration {i:4}: Cost {J_history[-1]:0.2e} &quot;,
+                  f&quot;dj_dw: {dj_dw: 0.3e}, dj_db: {dj_db: 0.3e}  &quot;,
+                  f&quot;w: {w: 0.3e}, b:{b: 0.5e}&quot;)
+ 
+    return w, b, J_history, p_history #return w and J,w history for graphing
+
+# initialize parameters
+w_init = 0
+b_init = 0
+# some gradient descent settings
+iterations = 10000
+tmp_alpha = 1.0e-2
+# run gradient descent
+w_final, b_final, J_hist, p_hist = gradient_descent(x_train ,y_train, w_init, b_init, tmp_alpha, 
+                                                    iterations, compute_cost, compute_gradient)
+print(f&quot;(w,b) found by gradient descent: ({w_final:8.4f},{b_final:8.4f})&quot;)
+plt.scatter(x_train,y_train)
+plt.plot(x_train,w_final * x_train + b_final)
+plt.show()</pre><pre class="hljs"><code><span class="hljs-keyword">import</span> math, copy
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+x_train = np.array([<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3.4</span>,<span class="hljs-number">5.6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>])
+y_train = np.array([<span class="hljs-number">3</span>,<span class="hljs-number">6</span>,<span class="hljs-number">8</span>,<span class="hljs-number">11</span>,<span class="hljs-number">14</span>,<span class="hljs-number">17</span>,<span class="hljs-number">21</span>])
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">compute_cost</span>(<span class="hljs-params">x, y, w, b</span>):
+   
+    m = x.shape[<span class="hljs-number">0</span>] 
+    cost = <span class="hljs-number">0</span>
+    
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m):
+        f_wb = w * x[i] + b
+        cost = cost + (f_wb - y[i])**<span class="hljs-number">2</span>
+    total_cost = <span class="hljs-number">1</span> / (<span class="hljs-number">2</span> * m) * cost
+
+    <span class="hljs-keyword">return</span> total_cost
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">compute_gradient</span>(<span class="hljs-params">x, y, w, b</span>): 
+    <span class="hljs-string">&quot;&quot;&quot;
+    Computes the gradient for linear regression 
+    Args:
+      x (ndarray (m,)): Data, m examples 
+      y (ndarray (m,)): target values
+      w,b (scalar)    : model parameters  
+    Returns
+      dj_dw (scalar): The gradient of the cost w.r.t. the parameters w
+      dj_db (scalar): The gradient of the cost w.r.t. the parameter b     
+     &quot;&quot;&quot;</span>
+    
+    <span class="hljs-comment"># Number of training examples</span>
+    m = x.shape[<span class="hljs-number">0</span>]    
+    dj_dw = <span class="hljs-number">0</span>
+    dj_db = <span class="hljs-number">0</span>
+    
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m):  
+        f_wb = w * x[i] + b 
+        dj_dw_i = (f_wb - y[i]) * x[i] 
+        dj_db_i = f_wb - y[i] 
+        dj_db += dj_db_i
+        dj_dw += dj_dw_i 
+    dj_dw = dj_dw / m 
+    dj_db = dj_db / m 
+        
+    <span class="hljs-keyword">return</span> dj_dw, dj_db
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">gradient_descent</span>(<span class="hljs-params">x, y, w_in, b_in, alpha, num_iters, cost_function, gradient_function</span>): 
+    <span class="hljs-string">&quot;&quot;&quot;
+    Performs gradient descent to fit w,b. Updates w,b by taking 
+    num_iters gradient steps with learning rate alpha
+    
+    Args:
+      x (ndarray (m,))  : Data, m examples 
+      y (ndarray (m,))  : target values
+      w_in,b_in (scalar): initial values of model parameters  
+      alpha (float):     Learning rate
+      num_iters (int):   number of iterations to run gradient descent
+      cost_function:     function to call to produce cost
+      gradient_function: function to call to produce gradient
+      
+    Returns:
+      w (scalar): Updated value of parameter after running gradient descent
+      b (scalar): Updated value of parameter after running gradient descent
+      J_history (List): History of cost values
+      p_history (list): History of parameters [w,b] 
+      &quot;&quot;&quot;</span>
+    
+    w = copy.deepcopy(w_in) <span class="hljs-comment"># avoid modifying global w_in</span>
+    <span class="hljs-comment"># An array to store cost J and w&apos;s at each iteration primarily for graphing later</span>
+    J_history = []
+    p_history = []
+    b = b_in
+    w = w_in
+    
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_iters):
+        <span class="hljs-comment"># Calculate the gradient and update the parameters using gradient_function</span>
+        dj_dw, dj_db = gradient_function(x, y, w , b)     
+
+        <span class="hljs-comment"># Update Parameters using equation (3) above</span>
+        b = b - alpha * dj_db                            
+        w = w - alpha * dj_dw                            
+
+        <span class="hljs-comment"># Save cost J at each iteration</span>
+        <span class="hljs-keyword">if</span> i&lt;<span class="hljs-number">100000</span>:      <span class="hljs-comment"># prevent resource exhaustion </span>
+            J_history.append( cost_function(x, y, w , b))
+            p_history.append([w,b])
+        <span class="hljs-comment"># Print cost every at intervals 10 times or as many iterations if &lt; 10</span>
+        <span class="hljs-keyword">if</span> i% math.ceil(num_iters/<span class="hljs-number">10</span>) == <span class="hljs-number">0</span>:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Iteration <span class="hljs-subst">{i:<span class="hljs-number">4</span>}</span>: Cost <span class="hljs-subst">{J_history[-<span class="hljs-number">1</span>]:<span class="hljs-number">0.2</span>e}</span> &quot;</span>,
+                  <span class="hljs-string">f&quot;dj_dw: <span class="hljs-subst">{dj_dw: <span class="hljs-number">0.3</span>e}</span>, dj_db: <span class="hljs-subst">{dj_db: <span class="hljs-number">0.3</span>e}</span>  &quot;</span>,
+                  <span class="hljs-string">f&quot;w: <span class="hljs-subst">{w: <span class="hljs-number">0.3</span>e}</span>, b:<span class="hljs-subst">{b: <span class="hljs-number">0.5</span>e}</span>&quot;</span>)
+ 
+    <span class="hljs-keyword">return</span> w, b, J_history, p_history <span class="hljs-comment">#return w and J,w history for graphing</span>
+
+<span class="hljs-comment"># initialize parameters</span>
+w_init = <span class="hljs-number">0</span>
+b_init = <span class="hljs-number">0</span>
+<span class="hljs-comment"># some gradient descent settings</span>
+iterations = <span class="hljs-number">10000</span>
+tmp_alpha = <span class="hljs-number">1.0e-2</span>
+<span class="hljs-comment"># run gradient descent</span>
+w_final, b_final, J_hist, p_hist = gradient_descent(x_train ,y_train, w_init, b_init, tmp_alpha, 
+                                                    iterations, compute_cost, compute_gradient)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;(w,b) found by gradient descent: (<span class="hljs-subst">{w_final:<span class="hljs-number">8.4</span>f}</span>,<span class="hljs-subst">{b_final:<span class="hljs-number">8.4</span>f}</span>)&quot;</span>)
+plt.scatter(x_train,y_train)
+plt.plot(x_train,w_final * x_train + b_final)
+plt.show()</code></pre></div>
 </div></div>
 					</body>
 				</html>
